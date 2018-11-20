@@ -1,80 +1,77 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>vue_project</title>
-    <style>
-      .text{
-        display: inline-block;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="app">
-      <input type="text" v-model = "msg" v-on:keyup.enter="box"/><button v-on:click="find">
-        查找
-      </button>
-      <ul>
-        <li v-for="(item,index) in filterlist" v-bind:key="index">
-        <input type="text" v-model="txt" v-if="curIndex===index" v-on:keyup.enter="ok(index)"
-        v-on:keyup.esc="cancel">
-         <p v-html="item.text" class="text"> {{item.text}}</p>
-            <button v-on:click=del(index)>删除</button>
-            <button v-on:click=modify(index)>修改</button>
-        </li>
-        
-      </ul>
-    </div>
-    
-  </body>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style>
+        .red{
+          color:red;
+        }
+        .green{
+          color:green;
+        }
+        .blue{
+          color:blue;
+        }
+        </style>
+    </head>
+    <body>
+      <div id="app">
+            <ul>
+             
+              <li v-for="(item,index) in filterList" v-bind:key="index"> <input type="checkbox" v-bind:checked='item.flag'>{{item.text}}</li>
+             
+            </ul>
+            <button @click="type='all'">全部</button>
+            <button @click="type='completed'">完成的</button>
+            <button @click="type='uncompleted'">未完成</button>
+            <input type="text" v-model="n">{{n}}
+            <p v-bind:class="{'red':n<60,'green':n>=85,'blue':n>=60&&n<85}">{{grade}}</p>
+      </div>
+    </body>
 </html>
 <script src="./static/js/vue.js"></script>
 <script>
-  var vm = new Vue({
-    el:"#app",                                                                                                                                                      
-    data:{
-      msg:"",
-      txt:"",
-      curIndex:-1,
-      todos:[
-        {text:"今天好开心啊"},
-        {text:"今天真的很开心啊"},
-        {text:"今天太开心啊"},
-      ],
-      filterlist:[]
+ var vm = new Vue({
+   el:"#app",
+   data:{
+     n:60,
+     list:[
+     {text:"今天开心",flag:true},
+     {text:"今天好开心",flag:false},
+     {text:"今天特别开心",flag:true}
+     ],
+     type:'all'
+   },
+   computed:{
+    filterList(){
+      return this.list.filter((item)=>{
+        if(this.type==='all'){
+              return true;
+        }else if(this.type==='completed'){
+              return item.flag;
+        }else{
+              return !item.flag;
+        }
+      })
     },
-    methods:{
-      box(){
-          this.todos.push({text:this.msg})
-          this.msg=""
-      },
-      //删除
-      del(idx){
-          this.todos.splice(idx,1)
-      },
-      //查找
-      find(){
-          this.filterlist=this.todos.filter((item)=>{
-            return item.text.includes(this.msg)
-          }).map((item)=>{
-            return{
-              text:item.text.replace(this.msg,"<span style='color:red'>"+this.msg+"</span>")
-            }
-          })
-      },
-      //修改
-      modify(index){
-            this.txt = this.todos[index].text;
-            this.curIndex = index;//文本框渲染，不被隐藏
-      },
-      ok(index){
-            this.todos[index].text=this.txt;
-            this.curIndex=-1//文本框隐藏，不被渲染
-      },
-      cancel(){
-        this.curIndex=-1//文本框隐藏，不被渲染
+    grade(){
+      if(this.n<60){
+        return "不及格"
+      }else if(this.n>=85){
+        return "优秀"
+      }else{
+        return "及格"
       }
     }
-  })
+   }
+
+ })
 </script>
