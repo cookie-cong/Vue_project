@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>vue_project</title>
+    <style>
+      .text{
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <input type="text" v-model = "msg" v-on:keyup.enter="box"/><button v-on:click="find">
+        查找
+      </button>
+      <ul>
+        <li v-for="(item,index) in filterlist" v-bind:key="index">
+        <input type="text" v-model="txt" v-if="curIndex===index" v-on:keyup.enter="ok(index)"
+        v-on:keyup.esc="cancel">
+         <p v-html="item.text" class="text"> {{item.text}}</p>
+            <button v-on:click=del(index)>删除</button>
+            <button v-on:click=modify(index)>修改</button>
+        </li>
+        
+      </ul>
+    </div>
+    
+  </body>
+</html>
+<script src="./static/js/vue.js"></script>
+<script>
+  var vm = new Vue({
+    el:"#app",                                                                                                                                                      
+    data:{
+      msg:"",
+      txt:"",
+      curIndex:-1,
+      todos:[
+        {text:"今天好开心啊"},
+        {text:"今天真的很开心啊"},
+        {text:"今天太开心啊"},
+      ],
+      filterlist:[]
+    },
+    methods:{
+      box(){
+          this.todos.push({text:this.msg})
+          this.msg=""
+      },
+      //删除
+      del(idx){
+          this.todos.splice(idx,1)
+      },
+      //查找
+      find(){
+          this.filterlist=this.todos.filter((item)=>{
+            return item.text.includes(this.msg)
+          }).map((item)=>{
+            return{
+              text:item.text.replace(this.msg,"<span style='color:red'>"+this.msg+"</span>")
+            }
+          })
+      },
+      //修改
+      modify(index){
+            this.txt = this.todos[index].text;
+            this.curIndex = index;//文本框渲染，不被隐藏
+      },
+      ok(index){
+            this.todos[index].text=this.txt;
+            this.curIndex=-1//文本框隐藏，不被渲染
+      },
+      cancel(){
+        this.curIndex=-1//文本框隐藏，不被渲染
+      }
+    }
+  })
+</script>
