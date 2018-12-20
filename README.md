@@ -1,5 +1,5 @@
 # vue_project
-
+内容在index.html里
 > A Vue.js project
 
 ## Build Setup
